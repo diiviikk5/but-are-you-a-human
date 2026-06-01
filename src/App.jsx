@@ -79,6 +79,7 @@ export default function App() {
   const [inventoryData, setInventoryData] = useState(INITIAL_INVENTORY);
   const [flightsData, setFlightsData] = useState(INITIAL_FLIGHTS);
   const [isUnderAttack, setIsUnderAttack] = useState(false);
+  const [vault, setVault] = useState({});
   const [transactionLedger, setTransactionLedger] = useState([]);
   const [captchaRequired, setCaptchaRequired] = useState(false);
   const [captchaValue, setCaptchaValue] = useState('');
@@ -132,6 +133,25 @@ export default function App() {
   const handleExecuteAgentCommand = (command, args) => {
     setBrowserMessage(null);
     
+    if (command.startsWith('vault.')) {
+      if (command === 'vault.set') {
+        const key = args[0];
+        const val = args.slice(1).join(' ');
+        if (!key || !val) return { success: false, message: 'Usage: vault.set <key> <value>' };
+        
+        setVault(prev => ({ ...prev, [key.toUpperCase()]: val }));
+        return { success: true, message: `Vault Key "${key.toUpperCase()}" registered securely. Available for injection as "$${key.toUpperCase()}".` };
+      }
+      
+      if (command === 'vault.list') {
+        const keys = Object.keys(vault);
+        if (keys.length === 0) return { success: true, message: 'Vault is empty.', details: ['No credentials stored yet. Use: vault.set <key> <value>'] };
+        
+        const details = keys.map(k => `  [SECURE V] $${k}: ******************`);
+        return { success: true, message: 'Stored Vault Credentials:', details };
+      }
+    }
+
     if (command.startsWith('assert.')) {
       const ref = args[0];
       const expected = args.slice(1).join(' ');
@@ -266,10 +286,18 @@ export default function App() {
 
     if (command === 'fill') {
       const ref = args[0];
-      const value = args.slice(1).join(' ');
+      let value = args.slice(1).join(' ');
 
       if (!ref || !value) {
         return { success: false, message: 'Usage: fill <@ref> <value>' };
+      }
+
+      // Resolve secure credentials vault keys
+      if (value.startsWith('$')) {
+        const vaultKey = value.replace('$', '').toUpperCase();
+        if (vault[vaultKey]) {
+          value = vault[vaultKey];
+        }
       }
 
       if (selectedScenario.id === 'signup') {
