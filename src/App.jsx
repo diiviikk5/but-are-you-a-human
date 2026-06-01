@@ -5,6 +5,7 @@ import AgentTerminal from './components/AgentTerminal';
 import ScenarioView from './components/ScenarioView';
 import Dashboard from './components/Dashboard';
 import { compileZeroPolicy, DEFAULT_POLICY_CODE, PERMISSIVE_POLICY_CODE, SUPER_STRICT_POLICY_CODE } from './compiler/zeroRuntime';
+import { playSound } from './utils/audio';
 
 const SCENARIOS = [
   {
@@ -99,13 +100,19 @@ export default function App() {
   const simInterval = useRef(null);
 
   // Trigger compiler in real-time on policy code edits
+  const prevStatusRef = useRef('success');
   useEffect(() => {
     const result = compileZeroPolicy(policyCode);
     setCompileResult(result);
+    if (result.status !== prevStatusRef.current) {
+      playSound(result.status === 'success' ? 'success' : 'error');
+      prevStatusRef.current = result.status;
+    }
   }, [policyCode]);
 
   // Handle Scenario change
   const handleScenarioChange = (scenario) => {
+    playSound('beep');
     setSelectedScenario(scenario);
     setBrowserMessage(null);
     setCaptchaRequired(false);
@@ -404,6 +411,7 @@ export default function App() {
 
   // Real-time Traffic Simulator loop
   const toggleSimulation = () => {
+    playSound('trigger');
     if (simulationRunning) {
       clearInterval(simInterval.current);
       setSimulationRunning(false);
@@ -503,12 +511,14 @@ export default function App() {
   };
 
   const handlePresetLoad = (preset) => {
+    playSound('success');
     if (preset === 'balanced') setPolicyCode(DEFAULT_POLICY_CODE);
     if (preset === 'permissive') setPolicyCode(PERMISSIVE_POLICY_CODE);
     if (preset === 'strict') setPolicyCode(SUPER_STRICT_POLICY_CODE);
   };
 
   const handleTriggerAttack = (type) => {
+    playSound('trigger');
     const burstCount = 6;
     let newLogs = [];
     
