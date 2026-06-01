@@ -6,7 +6,7 @@ In a future where autonomous agents buy concert tickets, fill SaaS forms, and sc
 
 ---
 
-## ⚡ Key Highlights & Features
+##  Key Highlights & Features
 
 1. **Simulated Zerolang Policy Engine (`policy.0`)**: 
    - A live code editor where you write protection rules using **Zero**, Vercel's agent-first systems programming language.
@@ -35,7 +35,7 @@ In a future where autonomous agents buy concert tickets, fill SaaS forms, and sc
 
 ---
 
-## 🎮 How to Run Locally
+##  How to Run Locally
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -63,7 +63,7 @@ In a future where autonomous agents buy concert tickets, fill SaaS forms, and sc
 
 ---
 
-## 🛡️ Writing Zerolang Policies (`policy.0`)
+##  Writing Zerolang Policies (`policy.0`)
 
 Write policy checks directly inside the active editor using Zerolang's explicit systems logic. Below is a sample policy that restricts bots, protects booking, and validates cryptographic credentials:
 
@@ -108,7 +108,7 @@ pub fun check_policy(flow: String, user_type: String, rate: i32, verified_agent:
 
 ---
 
-## 🏗️ Architectural Visual
+##  Architectural Visual
 
 ```mermaid
 graph TD
