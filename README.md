@@ -1,125 +1,91 @@
 # But Are You A Human? — Agent-Safe but Abuse-Resistant UX Playground
 
-**"But Are You A Human?"** is an interactive browser-based dashboard and policy testing playground. It helps developers test, simulate, and design web policies that allow **AI Agents** (using `agent-browser` accessibility tree mappings) to run visual web transactions without becoming an open vector for **malicious bot abuse**.
+**"But Are You A Human?"** is an advanced interactive visual testing ground and web policy simulator. It helps developers research, model, and deploy server policies that allow **AI Agents** (using `agent-browser` accessibility tree mappings) to run web flows (ticket purchases, saas signups, fare searches) efficiently while shielding the Visual DOM from **malicious bot abuse**.
 
-In a future where autonomous agents buy concert tickets, fill SaaS forms, and scrape listings, websites need a new architectural tier: **Agent-Safe but Abuse-Resistant UX**. 
-
----
-
-##  Key Highlights & Features
-
-1. **Simulated Zerolang Policy Engine (`policy.0`)**: 
-   - A live code editor where you write protection rules using **Zero**, Vercel's agent-first systems programming language.
-   - Provides instant **JSON Compiler Diagnostics** in the log panel, matching Vercel's zero compiler warnings, errors, and static contract checks (e.g. tracking impure effects like `world.out.write` or missing `raises` statements).
-   - Generates executable rules in real-time to intercept simulation events.
-
-2. **Agent-Browser CLI Terminal Emulator**:
-   - A terminal mimicking the `agent-browser` toolchain by Vercel Labs.
-   - Run console commands:
-     - `open <url>`: Navigates browser tabs.
-     - `snapshot`: Renders the Accessibility Tree as seen by an AI LLM (compact text and unique ref tags like `@e1`, `@e2`).
-     - `click <@ref>`: Interacts deterministically with elements.
-     - `fill <@ref> <value>`: Types textual data.
-
-3. **Interactive Visual Web Scenarios**:
-   - **Ticket Booking / Seat Scalping**: Protect seat sales against rapid bot scalping. Verified agents using cryptographic key signatures bypass standard human CAPTCHAs, but are strictly throttled.
-   - **SaaS Signup Portal**: Avoid spam trial signups. Emulates agents validating credentials via decentralized identifiers (DIDs) or API keys.
-   - **Data Scraping rate blocks**: Defend visual servers against aggressive database scrapers. Policies direct AI agents to `/polite-agent-feed` while rate-limiting standard visual scrapers.
-
-4. **Real-time Traffic Simulator & Security Analytics**:
-   - Hit **"Start Traffic"** to generate periodic concurrent requests representing **Humans**, **Verified Agents**, and **Malicious Bots** hitting your policy.
-   - Renders live dashboards tracking:
-     - **Human UX Friction Factor**: The captcha overhead humans have to endure due to overly strict or porous policies.
-     - **Agent Transaction Success Rate**: How successfully productive agents complete goals.
-     - **Malicious Bot Block Rate**: Ratio of blocked automated attack scripts.
+In a future where autonomous agents buy tickets, search flights, and register services, standard CAPTCHAs lock out useful AI enclaves. This playground models the modern solution: **Agent-Safe but Abuse-Resistant UX**.
 
 ---
 
-##  How to Run Locally
+## ⚡ Core Systems & Features
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm (v9 or higher)
+1. **Simulated Zerolang Compiler & Presets (`policy.0`)**:
+   - Live code editor supporting **Zero** syntax (Vercel's agent-first systems programming language).
+   - Generates **JSON Diagnostics logs** in real-time, checking for braces balance, side-effect declarations (`check`), and missing `raises` clauses.
+   - Presets toolbar: Quick-load **🛡️ Balanced**, **🔓 Permissive**, or **🔒 Block All** templates instantly.
+   - **🧪 Automated Regression Test Runner**: Run a 4-suite regression check against the compiler directly from the UI to verify parser integrity.
 
-### Installation
-1. Clone the repository and navigate to the project root:
+2. **Agent-Browser Terminal & Command Assertions**:
+   - CLI terminal emulator mapping to the `agent-browser` toolchain by Vercel Labs.
+   - Custom **Theme Selector Toggles** (Electric Cyan, Matrix Green, CRT Amber, Silicon White) with customized caret indicators.
+   - Interactive keyboard ticks and synthesizer bells.
+   - Console command assertion actions:
+     - `assert.exists <@ref>`: Asserts node visibility.
+     - `assert.contains <@ref> <value>`: Asserts element text content matches.
+     - `assert.equals <@ref> <value>`: Asserts input form value equals text.
+
+3. **Secure Vault Credentials Manager**:
+   - Emulates browser enclave credential management via console CLI commands:
+     - `vault.set <key> <value>`: Securely registers a secret.
+     - `vault.list`: Inspects keys but redacts values under asterisks (`*********`).
+   - Resolves secrets inside CLI actions dynamically: `agent-browser fill @e4 $API_KEY`.
+
+4. **Visual Web Scenarios viewport**:
+   - **🎫 Concert Ticket seat booking**: Seat allocations, booking checkouts, and threat CAPTCHAs.
+   - **🚀 SaaS Account trial signup**: Cryptographic signature validation and account registries.
+   - **📦 Apex Logistics Inventory listings**: Rate throttle safeguards and Polite JSON endpoints.
+   - **✈️ SkySkip Flight search crawl (Scenario 4)**: pricing fare listings and travel agent query flows.
+   - Toggles dynamically between standard **🌐 Visual DOM (Human view)** and **🦾 Accessibility Tree (Agent view)**.
+
+5. **Security Analytics & Pulsing Glow Indicators**:
+   - **"Start Traffic"** feeds periodic random sessions (Humans, Agents, Bots) hitting the policy.
+   - Dashboard logs showing Human UX Friction (%), Agent Success Rate (%), and Bot Block Rate (%).
+   - **💥 Attack bursts triggers**: Launch direct Bot credential-stuffing surges or Human spikes.
+   - Pulsing glowing **neon threat frames** alert you during active bot surges.
+
+---
+
+## 🎹 Embedded Auditory Synth System
+
+Uses the browser's native **Web Audio API Synthesizer** (generating direct sine/sawtooth sound sweeps completely from scratch) to provide high-fidelity auditory confirmation:
+- **✓ Chime**: Double-tone success chime on clean compiles and authorized transacts.
+- **❌ Buzz**: Low sawtooth rumble on blocked bot attacks or syntax warnings.
+- **⚡ Sweep**: Frequency laser rise on starting simulation runs or active bot surges.
+
+---
+
+## 🎮 How to Launch and Test
+
+1. Navigate to the project root:
    ```bash
-   git clone https://github.com/your-username/but-are-you-a-human.git
-   cd but-are-you-a-human
+   cd "d:\Project x"
    ```
 
 2. Install dependencies:
    ```bash
    npm install --legacy-peer-deps
    ```
-   *(Note: `--legacy-peer-deps` is recommended due to peer resolutions on modern Vite 8 environments).*
 
-3. Launch the local dev server:
+3. Launch the dev workspace:
    ```bash
    npm run dev
    ```
 
-4. Open the browser link (usually `http://localhost:5173`) and start playing!
+4. Load the output browser URL and explore the visual enclaves!
 
 ---
 
-##  Writing Zerolang Policies (`policy.0`)
-
-Write policy checks directly inside the active editor using Zerolang's explicit systems logic. Below is a sample policy that restricts bots, protects booking, and validates cryptographic credentials:
-
-```rust
-pub fun check_policy(flow: String, user_type: String, rate: i32, verified_agent: bool) -> bool raises {
-    // Ticket Booking check
-    if flow == "booking" {
-        if user_type == "agent" {
-            // Block unverified AI agents
-            if !verified_agent {
-                return false
-            }
-            // Strict rate limit of 2 checkout attempts
-            if rate > 2 {
-                return false
-            }
-        }
-    }
-
-    // SaaS Signup protection
-    if flow == "signup" {
-        if user_type == "agent" {
-            if !verified_agent {
-                return false
-            }
-            if rate > 1 {
-                return false
-            }
-        }
-    }
-
-    // Scraper rate restriction
-    if flow == "scraping" {
-        if user_type == "bot" {
-            return false // Instant block
-        }
-    }
-
-    return true
-}
-```
-
----
-
-##  Architectural Visual
+## 🏗️ Architectural Flow chart
 
 ```mermaid
 graph TD
-    A[Incoming Web Requests] --> B{Zerolang Policy Engine}
-    B -- Human --> C[Visual DOM Rendering]
-    B -- Verified Agent --> D[Compact Accessibility Tree @e1/@e2]
-    B -- Malicious Bot --> E[Block / Captcha Challenge]
+    A[Incoming Request Session] --> B{Zerolang Policy Engine}
+    B -- Human --> C[Visual DOM viewport]
+    B -- Verified Agent --> D[Compact Accessibility refs @e1/@e2]
+    B -- Malicious Bot Scraper --> E[Visual Pulsing Glow Block / Captcha]
     
     C --> F[Seamless Human UX]
     D --> G[Safe Agent Automation]
-    E --> H[Protected Server Resources]
+    E --> H[Protected Infrastructure]
 ```
 
 ---
@@ -127,3 +93,4 @@ graph TD
 ## 📜 Licensing
 
 Distributed under the Apache-2.0 License. See `LICENSE` for details.
+All rights reserved © 2026.
