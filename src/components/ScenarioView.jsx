@@ -15,7 +15,8 @@ export default function ScenarioView({
   captchaValue,
   onCaptchaChange,
   captchaValid,
-  message
+  message,
+  isUnderAttack
 }) {
   
   // Format visual DOM rendering for seat booking
@@ -351,7 +352,7 @@ export default function ScenarioView({
   };
 
   return (
-    <div className="glass-panel mock-browser-container">
+    <div className={`glass-panel mock-browser-container ${isUnderAttack ? 'under-attack' : ''}`}>
       <div className="browser-bar">
         <div className="browser-dots">
           <span className="browser-dot red"></span>

@@ -202,6 +202,14 @@ body {
   flex-direction: column;
   height: 520px;
   overflow: hidden;
+  border: 1px solid var(--border-card);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.mock-browser-container.under-attack {
+  border-color: var(--color-bot);
+  box-shadow: 0 0 25px rgba(213, 0, 249, 0.45);
+  animation: flash-border 1.2s infinite alternate ease-in-out;
 }
 
 .browser-bar {
@@ -738,4 +746,9 @@ body {
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(-10px); }
   to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes flash-border {
+  0% { border-color: rgba(213, 0, 249, 0.3); box-shadow: 0 0 8px rgba(213, 0, 249, 0.15); }
+  100% { border-color: rgba(213, 0, 249, 0.95); box-shadow: 0 0 25px rgba(213, 0, 249, 0.55); }
 }

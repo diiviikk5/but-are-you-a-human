@@ -78,6 +78,7 @@ export default function App() {
   const [signupForm, setSignupForm] = useState({ name: '', email: '', attestation: '' });
   const [inventoryData, setInventoryData] = useState(INITIAL_INVENTORY);
   const [flightsData, setFlightsData] = useState(INITIAL_FLIGHTS);
+  const [isUnderAttack, setIsUnderAttack] = useState(false);
   const [captchaRequired, setCaptchaRequired] = useState(false);
   const [captchaValue, setCaptchaValue] = useState('');
   const [captchaValid, setCaptchaValid] = useState(false);
@@ -519,6 +520,10 @@ export default function App() {
 
   const handleTriggerAttack = (type) => {
     playSound('trigger');
+    if (type === 'bot') {
+      setIsUnderAttack(true);
+      setTimeout(() => setIsUnderAttack(false), 3000);
+    }
     const burstCount = 6;
     let newLogs = [];
     
@@ -646,11 +651,13 @@ export default function App() {
             onSignupFormChange={(field, val) => setSignupForm(p => ({ ...p, [field]: val }))}
             onSignupSubmit={handleInteractiveSubmit}
             inventoryData={inventoryData}
+            flightsData={flightsData}
             captchaRequired={captchaRequired}
             captchaValue={captchaValue}
             onCaptchaChange={setCaptchaValue}
             captchaValid={captchaValid}
             message={browserMessage}
+            isUnderAttack={isUnderAttack}
           />
         </div>
 
