@@ -50,6 +50,20 @@ pub fun check_policy(flow: String, user_type: String, rate: i32, verified_agent:
         }
     }
 
+    // Scenario 4: Flight Search Aggregator
+    if flow == "flights" {
+        if user_type == "agent" {
+            // Travel agents get access to a polite JSON search API feed
+            if rate > 3 {
+                return false
+            }
+        }
+        if user_type == "bot" {
+            // Abuse-resistant shield blocks high-frequency crawler scraping
+            return false
+        }
+    }
+
     return true
 }
 `;
@@ -70,11 +84,11 @@ pub fun check_policy(flow: String, user_type: String, rate: i32, verified_agent:
     // Intercept and block all non-human agent interactions
     if user_type == "agent" {
         return false
-    }
-    if user_type == "bot" {
+      }
+      if user_type == "bot" {
         return false
-    }
-    return true
+      }
+      return true
 }
 `;
 
