@@ -79,6 +79,7 @@ export default function App() {
   const [inventoryData, setInventoryData] = useState(INITIAL_INVENTORY);
   const [flightsData, setFlightsData] = useState(INITIAL_FLIGHTS);
   const [isUnderAttack, setIsUnderAttack] = useState(false);
+  const [transactionLedger, setTransactionLedger] = useState([]);
   const [captchaRequired, setCaptchaRequired] = useState(false);
   const [captchaValue, setCaptchaValue] = useState('');
   const [captchaValid, setCaptchaValid] = useState(false);
@@ -330,6 +331,12 @@ export default function App() {
             if (decision.allow) {
               setTicketSeats(prev => prev.map(s => s.status === 'selected' ? { ...s, status: 'taken' } : s));
               setBrowserMessage({ success: true, text: '🎉 Booking Checkout Successful! Ticket confirmed.' });
+              setTransactionLedger(prev => [{
+                id: Math.random().toString(36).substring(7),
+                timestamp: new Date().toLocaleTimeString(),
+                type: '🎫 Booking Secured',
+                details: 'Seats checked out via AI agent'
+              }, ...prev]);
               return { success: true, message: 'Ticket booking transaction authorized and finalized by active policy!' };
             } else {
               if (decision.reason.includes('unverified') || decision.reason.includes('rate limit')) {
@@ -358,6 +365,12 @@ export default function App() {
             const decision = compileResult.execute('signup', 'agent', rate, isVerified);
             if (decision.allow) {
               setBrowserMessage({ success: true, text: '🎉 Account Registration Successful! Welcome aboard.' });
+              setTransactionLedger(prev => [{
+                id: Math.random().toString(36).substring(7),
+                timestamp: new Date().toLocaleTimeString(),
+                type: '🚀 SaaS Signup Approved',
+                details: `Attestation verified for agent: ${signupForm.name}`
+              }, ...prev]);
               return { success: true, message: 'Account creation authorized and verified by security policy!' };
             } else {
               if (decision.reason.includes('unverified')) {
@@ -379,6 +392,12 @@ export default function App() {
             const decision = compileResult.execute('scraping', 'agent', 1, true);
             if (decision.allow) {
               setBrowserMessage({ success: true, text: '✓ Polite API Feed Fetch Approved. Returning structured payload (4 elements).' });
+              setTransactionLedger(prev => [{
+                id: Math.random().toString(36).substring(7),
+                timestamp: new Date().toLocaleTimeString(),
+                type: '📦 Polite Scrape Approved',
+                details: 'Structured JSON payload delivered'
+              }, ...prev]);
               return { success: true, message: 'Polite feed access granted by ZeroPolicy.', details: ['[API Response]: 200 OK', JSON.stringify(inventoryData)] };
             } else {
               return { success: false, message: `Polite feed access blocked: ${decision.reason}` };
@@ -393,6 +412,12 @@ export default function App() {
             const decision = compileResult.execute('flights', 'agent', 1, true);
             if (decision.allow) {
               setBrowserMessage({ success: true, text: '✓ SkySkip Polite API Feed approved. Flight listings payload returned.' });
+              setTransactionLedger(prev => [{
+                id: Math.random().toString(36).substring(7),
+                timestamp: new Date().toLocaleTimeString(),
+                type: '✈️ Flight API Scraped',
+                details: 'Fares payload returned'
+              }, ...prev]);
               return { success: true, message: 'API feed access granted by ZeroPolicy.', details: ['[API Response]: 200 OK', JSON.stringify(flightsData)] };
             } else {
               return { success: false, message: `API feed access blocked: ${decision.reason}` };
@@ -707,6 +732,25 @@ export default function App() {
             onExecuteCommand={handleExecuteAgentCommand}
             currentScenario={selectedScenario}
           />
+
+          <div className="column-header" style={{ marginTop: '12px' }}>
+            <h3>📜 TRANSACTION AUDIT LEDGER</h3>
+          </div>
+          <div className="glass-panel" style={{ padding: '12px', height: '140px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {transactionLedger.length === 0 ? (
+              <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', margin: 'auto', display: 'block', textAlign: 'center' }}>No audit transactions recorded yet.</span>
+            ) : (
+              transactionLedger.map(tx => (
+                <div key={tx.id} style={{ display: 'flex', justifyContent: 'space-between', borderLeft: '3px solid var(--color-human)', background: 'rgba(0, 230, 118, 0.05)', padding: '6px 10px', borderRadius: '4px', fontSize: '0.7rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <span style={{ color: '#fff', fontWeight: 'bold' }}>{tx.type}</span>
+                    <span style={{ color: 'var(--color-text-secondary)' }}>{tx.details}</span>
+                  </div>
+                  <span style={{ color: 'var(--color-human)', fontWeight: 'bold', fontFamily: 'var(--font-mono)' }}>{tx.timestamp}</span>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
         {/* Center Column: Sandbox Browser viewport */}
