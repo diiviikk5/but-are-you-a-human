@@ -127,4 +127,3 @@ graph TD
 ## 📜 Licensing
 
 Distributed under the Apache-2.0 License. See `LICENSE` for details.
-Project created by **Antigravity AI** for Vercel Labs experimentations.
