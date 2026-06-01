@@ -4,7 +4,7 @@ import CodeEditor from './components/CodeEditor';
 import AgentTerminal from './components/AgentTerminal';
 import ScenarioView from './components/ScenarioView';
 import Dashboard from './components/Dashboard';
-import { compileZeroPolicy, DEFAULT_POLICY_CODE } from './compiler/zeroRuntime';
+import { compileZeroPolicy, DEFAULT_POLICY_CODE, PERMISSIVE_POLICY_CODE, SUPER_STRICT_POLICY_CODE } from './compiler/zeroRuntime';
 
 const SCENARIOS = [
   {
@@ -464,6 +464,75 @@ export default function App() {
     setTrafficFeed([]);
   };
 
+  const handlePresetLoad = (preset) => {
+    if (preset === 'balanced') setPolicyCode(DEFAULT_POLICY_CODE);
+    if (preset === 'permissive') setPolicyCode(PERMISSIVE_POLICY_CODE);
+    if (preset === 'strict') setPolicyCode(SUPER_STRICT_POLICY_CODE);
+  };
+
+  const handleTriggerAttack = (type) => {
+    const burstCount = 6;
+    let newLogs = [];
+    
+    setMetrics(prev => {
+      let updated = { ...prev };
+      
+      for (let i = 0; i < burstCount; i++) {
+        let flow = selectedScenario.id;
+        let rate = type === 'bot' ? 12 : Math.floor(Math.random() * 4) + 1;
+        let isVerified = type === 'agent' ? Math.random() > 0.3 : false;
+
+        let allow = true;
+        let reason = 'Allowed by default';
+
+        if (compileResult.execute) {
+          const decision = compileResult.execute(flow, type, rate, isVerified);
+          allow = decision.allow;
+          reason = decision.reason;
+        }
+
+        const logId = Math.random().toString(36).substring(7);
+        const actionStr = 
+          flow === 'booking' ? `Purchase concert seat [BURST]` :
+          flow === 'signup' ? `Create trial account [BURST]` :
+          `Scrape global inventory [BURST]`;
+
+        newLogs.push({
+          id: logId,
+          type,
+          flow,
+          rate,
+          verified: isVerified,
+          action: actionStr,
+          allow,
+          reason: allow ? '' : reason
+        });
+
+        if (type === 'human') {
+          updated.humanRequests += 1;
+          if (!allow) {
+            updated.humanFriction = Math.min(100, Math.round(( (updated.humanRequests - updated.humanBypasses) / updated.humanRequests ) * 100));
+          } else {
+            updated.humanBypasses += 1;
+            updated.humanFriction = Math.round( ( (updated.humanRequests - updated.humanBypasses) / updated.humanRequests ) * 100 );
+          }
+        } else if (type === 'agent') {
+          updated.agentRequests += 1;
+          if (allow) updated.agentSuccesses += 1;
+          updated.agentSuccess = Math.round((updated.agentSuccesses / updated.agentRequests) * 100);
+        } else if (type === 'bot') {
+          updated.botRequests += 1;
+          if (!allow) updated.botBlocks += 1;
+          updated.botsBlocked = Math.round((updated.botBlocks / updated.botRequests) * 100);
+        }
+      }
+
+      return updated;
+    });
+
+    setTrafficFeed(prev => [...newLogs, ...prev].slice(0, 15));
+  };
+
   // Pause simulation on unmount
   useEffect(() => {
     return () => clearInterval(simInterval.current);
@@ -546,6 +615,7 @@ export default function App() {
             code={policyCode}
             onChange={setPolicyCode}
             compileResult={compileResult}
+            onLoadPreset={handlePresetLoad}
           />
           
           <Dashboard
@@ -554,6 +624,7 @@ export default function App() {
             simulationRunning={simulationRunning}
             toggleSimulation={toggleSimulation}
             onResetMetrics={handleResetMetrics}
+            onTriggerAttack={handleTriggerAttack}
           />
         </div>
       </main>

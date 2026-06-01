@@ -54,6 +54,30 @@ pub fun check_policy(flow: String, user_type: String, rate: i32, verified_agent:
 }
 `;
 
+export const PERMISSIVE_POLICY_CODE = `// Permissive Policy - Allows all traffic freely
+// Written in Zerolang (.0) - The Agent-First Language
+
+pub fun check_policy(flow: String, user_type: String, rate: i32, verified_agent: bool) -> bool raises {
+    // Allows bots, unverified agents, and humans to execute all flows at high rates
+    return true
+}
+`;
+
+export const SUPER_STRICT_POLICY_CODE = `// Paranoid / Block-All Policy - Blocks all Agents & Bots
+// Written in Zerolang (.0) - The Agent-First Language
+
+pub fun check_policy(flow: String, user_type: String, rate: i32, verified_agent: bool) -> bool raises {
+    // Intercept and block all non-human agent interactions
+    if user_type == "agent" {
+        return false
+    }
+    if user_type == "bot" {
+        return false
+    }
+    return true
+}
+`;
+
 /**
  * Parses and compiles a Zerolang (.0) string.
  * Returns an object with { status: 'success'|'error', diagnostics: [], execute: Function }

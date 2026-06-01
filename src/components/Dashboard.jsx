@@ -5,7 +5,8 @@ export default function Dashboard({
   trafficFeed,
   simulationRunning,
   toggleSimulation,
-  onResetMetrics
+  onResetMetrics,
+  onTriggerAttack
 }) {
   return (
     <div className="glass-panel simulator-panel" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -26,6 +27,13 @@ export default function Dashboard({
         <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '6px' }}>
           Simulates continuous web requests hitting the active Zero policy.
         </p>
+      </div>
+
+      {/* Instant Traffic Triggers */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+        <button onClick={() => onTriggerAttack('bot')} style={{ flex: 1, background: 'rgba(213, 0, 249, 0.1)', color: 'var(--color-bot)', border: '1px solid rgba(213, 0, 249, 0.25)', borderRadius: '6px', fontSize: '0.75rem', padding: '6px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: 'bold', transition: 'all 0.2s' }}>💥 Bot Attack</button>
+        <button onClick={() => onTriggerAttack('agent')} style={{ flex: 1, background: 'rgba(0, 229, 255, 0.1)', color: 'var(--color-agent)', border: '1px solid rgba(0, 229, 255, 0.25)', borderRadius: '6px', fontSize: '0.75rem', padding: '6px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: 'bold', transition: 'all 0.2s' }}>🤖 Run Agent</button>
+        <button onClick={() => onTriggerAttack('human')} style={{ flex: 1, background: 'rgba(0, 230, 118, 0.1)', color: 'var(--color-human)', border: '1px solid rgba(0, 230, 118, 0.25)', borderRadius: '6px', fontSize: '0.75rem', padding: '6px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: 'bold', transition: 'all 0.2s' }}>👤 Human Load</button>
       </div>
 
       {/* Metrics Row */}

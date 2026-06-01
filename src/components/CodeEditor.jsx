@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function CodeEditor({ code, onChange, compileResult }) {
+export default function CodeEditor({ code, onChange, compileResult, onLoadPreset }) {
   const handleTextChange = (e) => {
     onChange(e.target.value);
   };
@@ -16,7 +16,13 @@ export default function CodeEditor({ code, onChange, compileResult }) {
           {isSuccess ? 'Compiled Successfully (0)' : 'Compilation Failed'}
         </div>
       </div>
-      
+      <div style={{ display: 'flex', background: 'rgba(0,0,0,0.15)', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '6px 12px', gap: '8px' }}>
+        <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center' }}>Presets:</span>
+        <button onClick={() => onLoadPreset('balanced')} style={{ background: 'rgba(0, 229, 255, 0.1)', color: 'var(--color-agent)', border: '1px solid rgba(0, 229, 255, 0.2)', borderRadius: '4px', fontSize: '0.7rem', padding: '2px 8px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: 'bold' }}>🛡️ Balanced</button>
+        <button onClick={() => onLoadPreset('permissive')} style={{ background: 'rgba(0, 230, 118, 0.05)', color: 'var(--color-human)', border: '1px solid rgba(0, 230, 118, 0.15)', borderRadius: '4px', fontSize: '0.7rem', padding: '2px 8px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: 'bold' }}>🔓 Permissive</button>
+        <button onClick={() => onLoadPreset('strict')} style={{ background: 'rgba(255, 23, 68, 0.05)', color: 'var(--color-danger)', border: '1px solid rgba(255, 23, 68, 0.15)', borderRadius: '4px', fontSize: '0.7rem', padding: '2px 8px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: 'bold' }}>🔒 Block All</button>
+      </div>
+
       <textarea
         className="code-editor-textarea"
         value={code}
