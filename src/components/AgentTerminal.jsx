@@ -64,6 +64,9 @@ export default function AgentTerminal({ onExecuteCommand, currentScenario }) {
         { type: 'ref', text: '  snapshot              Print current accessibility tree snapshot with deterministic refs' },
         { type: 'ref', text: '  click <@ref>          Trigger click action on the element specified by ref' },
         { type: 'ref', text: '  fill <@ref> <value>   Type character string into the input element specified by ref' },
+        { type: 'ref', text: '  assert.contains <@r> <v> Asserts that the element visual label contains string' },
+        { type: 'ref', text: '  assert.equals <@r> <v>   Asserts that an input text value matches exactly' },
+        { type: 'ref', text: '  assert.exists <@ref>     Asserts that element is visible in active DOM' },
         { type: 'ref', text: '  clear                 Clear terminal history buffer' }
       ]);
       playSound('success');

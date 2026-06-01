@@ -131,6 +131,79 @@ export default function App() {
   const handleExecuteAgentCommand = (command, args) => {
     setBrowserMessage(null);
     
+    if (command.startsWith('assert.')) {
+      const ref = args[0];
+      const expected = args.slice(1).join(' ');
+
+      if (!ref) return { success: false, message: 'Assertion Error: Element reference @ref required' };
+
+      // Helper to find element existence/values
+      let nodeValue = null;
+      let nodeExists = false;
+
+      if (selectedScenario.id === 'signup') {
+        if (ref === '@e1') { nodeExists = true; nodeValue = 'ScaleFlow Cloud Signup Portal'; }
+        if (ref === '@e2') { nodeExists = true; nodeValue = signupForm.name; }
+        if (ref === '@e3') { nodeExists = true; nodeValue = signupForm.email; }
+        if (ref === '@e4') { nodeExists = true; nodeValue = signupForm.attestation; }
+        if (ref === '@e5') { nodeExists = true; nodeValue = 'Register Account'; }
+        if (ref === '@e6' && captchaRequired) { nodeExists = true; nodeValue = captchaValue; }
+      }
+
+      if (selectedScenario.id === 'booking') {
+        if (ref === '@e1') { nodeExists = true; nodeValue = 'NeonPulse Concert Tickets'; }
+        if (ref === '@e2') { nodeExists = true; nodeValue = 'Seats chart selection'; }
+        if (ref === '@e3') { nodeExists = true; nodeValue = 'Confirm Ticket Checkout'; }
+        if (ref === '@e4' && captchaRequired) { nodeExists = true; nodeValue = captchaValue; }
+        if (ref.startsWith('@seat_')) {
+          const seat = ticketSeats.find(s => s.id === ref.replace('@', ''));
+          if (seat) { nodeExists = true; nodeValue = seat.status; }
+        }
+      }
+
+      if (selectedScenario.id === 'scraping') {
+        if (ref === '@e1') { nodeExists = true; nodeValue = 'Apex Logistics Global Inventory Portal'; }
+        if (ref === '@e2') { nodeExists = true; nodeValue = 'Fetch Polite JSON API Feed'; }
+        if (ref === '@e3') { nodeExists = true; nodeValue = 'Inventory list table'; }
+      }
+
+      if (selectedScenario.id === 'flights') {
+        if (ref === '@e1') { nodeExists = true; nodeValue = 'SkySkip Flights Aggregator Search'; }
+        if (ref === '@e2') { nodeExists = true; nodeValue = 'Fetch Polite Travel Agent JSON Feed'; }
+        if (ref === '@e3') { nodeExists = true; nodeValue = 'Flights pricing table'; }
+      }
+
+      if (command === 'assert.exists') {
+        if (nodeExists) {
+          return { success: true, message: `Assertion Passed: Node "${ref}" exists and is visible in accessibility tree.` };
+        }
+        return { success: false, message: `Assertion Failed: Node "${ref}" is not found or hidden.` };
+      }
+
+      if (command === 'assert.contains') {
+        if (!expected) return { success: false, message: 'Assertion Error: Expected string value parameter required' };
+        if (!nodeExists) return { success: false, message: `Assertion Failed: Target node "${ref}" does not exist.` };
+        
+        const stringVal = String(nodeValue).toLowerCase();
+        const searchVal = expected.toLowerCase();
+        
+        if (stringVal.includes(searchVal)) {
+          return { success: true, message: `Assertion Passed: Node "${ref}" ("${nodeValue}") contains expected pattern "${expected}".` };
+        }
+        return { success: false, message: `Assertion Failed: Node "${ref}" ("${nodeValue}") does not contain "${expected}".` };
+      }
+
+      if (command === 'assert.equals') {
+        if (!expected) return { success: false, message: 'Assertion Error: Expected value parameter required' };
+        if (!nodeExists) return { success: false, message: `Assertion Failed: Target node "${ref}" does not exist.` };
+
+        if (String(nodeValue).trim() === expected.trim()) {
+          return { success: true, message: `Assertion Passed: Node "${ref}" value equals expected "${expected}".` };
+        }
+        return { success: false, message: `Assertion Failed: Node "${ref}" value ("${nodeValue}") is not equal to expected "${expected}".` };
+      }
+    }
+
     if (command === 'open') {
       const url = args[0] || '';
       if (!url) return { success: false, message: 'URL parameter required' };
