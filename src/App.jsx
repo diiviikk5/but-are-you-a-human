@@ -24,6 +24,12 @@ const SCENARIOS = [
     title: '📦 Inventory Scraping',
     desc: 'Aggressive scrapers vs polite structured endpoints.',
     url: 'https://apexlogistics.com/inventory'
+  },
+  {
+    id: 'flights',
+    title: '✈️ Flight Search Aggregator',
+    desc: 'Aggressive crawler bots vs polite travel agents.',
+    url: 'https://skyskip.com/flights'
   }
 ];
 
@@ -53,6 +59,13 @@ const INITIAL_INVENTORY = [
   { id: 4, partNo: 'GPU-RTX-900', description: 'CyberRender Tensor Accelerator', stock: 0, price: '$850.00' }
 ];
 
+const INITIAL_FLIGHTS = [
+  { id: 1, flightNo: 'AA-402', route: 'NYC ➔ LHR', price: '$480', seats: '12 left', status: 'On Time' },
+  { id: 2, flightNo: 'JL-006', route: 'LAX ➔ HND', price: '$820', seats: '2 left', status: 'Filling Fast' },
+  { id: 3, flightNo: 'AF-083', route: 'SFO ➔ CDG', price: '$610', seats: '34 left', status: 'On Time' },
+  { id: 4, flightNo: 'EK-201', route: 'DXB ➔ JFK', price: '$1,200', seats: '8 left', status: 'Delayed' }
+];
+
 export default function App() {
   const [selectedScenario, setSelectedScenario] = useState(SCENARIOS[0]);
   const [viewMode, setViewMode] = useState('visual'); // 'visual' | 'a11y'
@@ -63,6 +76,7 @@ export default function App() {
   const [ticketSeats, setTicketSeats] = useState(INITIAL_SEATS);
   const [signupForm, setSignupForm] = useState({ name: '', email: '', attestation: '' });
   const [inventoryData, setInventoryData] = useState(INITIAL_INVENTORY);
+  const [flightsData, setFlightsData] = useState(INITIAL_FLIGHTS);
   const [captchaRequired, setCaptchaRequired] = useState(false);
   const [captchaValue, setCaptchaValue] = useState('');
   const [captchaValid, setCaptchaValid] = useState(false);
@@ -153,6 +167,16 @@ export default function App() {
           '  [Header] @e1: Apex Inventory',
           '  [Button] @e2: Polite JSON Feed',
           '  [Table] @e3: Inventory details (CPU-8096, RAM-DDR6, SSD-M2)'
+        ];
+        return { success: true, message: 'Accessibility snapshot compiled.', details };
+      }
+
+      if (selectedScenario.id === 'flights') {
+        const details = [
+          'Page Nodes:',
+          '  [Header] @e1: SkySkip Flights Aggregator',
+          '  [Button] @e2: Query Polite Travel Agent API Feed',
+          '  [Table] @e3: Visual Flights pricing table (NYC-LHR, LAX-HND, SFO-CDG)'
         ];
         return { success: true, message: 'Accessibility snapshot compiled.', details };
       }
@@ -277,6 +301,20 @@ export default function App() {
               return { success: true, message: 'Polite feed access granted by ZeroPolicy.', details: ['[API Response]: 200 OK', JSON.stringify(inventoryData)] };
             } else {
               return { success: false, message: `Polite feed access blocked: ${decision.reason}` };
+            }
+          }
+        }
+      }
+
+      if (selectedScenario.id === 'flights') {
+        if (ref === '@e2') {
+          if (compileResult.execute) {
+            const decision = compileResult.execute('flights', 'agent', 1, true);
+            if (decision.allow) {
+              setBrowserMessage({ success: true, text: '✓ SkySkip Polite API Feed approved. Flight listings payload returned.' });
+              return { success: true, message: 'API feed access granted by ZeroPolicy.', details: ['[API Response]: 200 OK', JSON.stringify(flightsData)] };
+            } else {
+              return { success: false, message: `API feed access blocked: ${decision.reason}` };
             }
           }
         }

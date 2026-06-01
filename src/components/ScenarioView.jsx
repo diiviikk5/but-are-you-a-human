@@ -10,6 +10,7 @@ export default function ScenarioView({
   onSignupFormChange,
   onSignupSubmit,
   inventoryData,
+  flightsData,
   captchaRequired,
   captchaValue,
   onCaptchaChange,
@@ -185,6 +186,47 @@ export default function ScenarioView({
     </div>
   );
 
+  // Format visual DOM rendering for flight aggregator search
+  const renderFlightsVisual = () => (
+    <div className="flow-screen">
+      <div className="flow-title">✈️ SkySkip Real-Time Flight Search</div>
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
+          Live fare listings and seat updates.
+        </p>
+        <button
+          className="btn"
+          style={{ width: 'auto', padding: '6px 12px', background: 'rgba(0, 229, 255, 0.1)', color: 'var(--color-agent)', border: '1px solid rgba(0, 229, 255, 0.3)' }}
+          onClick={() => onSignupSubmit('flights-api')}
+        >
+          ✓ Query API Search Feed
+        </button>
+      </div>
+
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', color: '#abb2bf', textAlign: 'left' }}>
+        <thead>
+          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '6px' }}>
+            <th style={{ padding: '8px 4px' }}>FLIGHT</th>
+            <th>ROUTE</th>
+            <th>PRICE</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {flightsData.map((f) => (
+            <tr key={f.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+              <td style={{ padding: '8px 4px', fontFamily: 'var(--font-mono)', color: 'var(--color-agent)' }}>{f.flightNo}</td>
+              <td>{f.route}</td>
+              <td style={{ fontWeight: 'bold' }}>{f.price}</td>
+              <td style={{ color: f.seats.includes('2 left') ? 'var(--color-danger)' : 'var(--color-human)' }}>{f.seats} ({f.status})</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
   // Accessibility representation showing simplified refs (how agent-browser views it)
   const renderAccessibilityTree = () => {
     if (scenario.id === 'booking') {
@@ -280,6 +322,31 @@ export default function ScenarioView({
       );
     }
 
+    if (scenario.id === 'flights') {
+      return (
+        <div className="a11y-tree-container">
+          <div className="a11y-node">
+            <span>[Header] SkySkip Flights Aggregator Search</span>
+            <span className="a11y-ref">@e1</span>
+          </div>
+          <div className="a11y-node a11y-agent-interactive">
+            <span>[Button] Fetch Polite Travel Agent JSON Feed</span>
+            <span className="a11y-ref">@e2</span>
+          </div>
+          <div className="a11y-node" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
+            <span>[Table] Flights Search Data (4 routes)</span>
+            <div style={{ paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {flightsData.map((f) => (
+                <div key={f.id} className="a11y-node" style={{ padding: '4px', fontSize: '0.7rem' }}>
+                  <span>[{f.flightNo}] {f.route} - price: {f.price} - seats: {f.seats}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return <div>No accessibility tree available for this scenario.</div>;
   };
 
@@ -332,7 +399,8 @@ export default function ScenarioView({
         {viewMode === 'visual' ? (
           scenario.id === 'booking' ? renderTicketBookingVisual() :
           scenario.id === 'signup' ? renderSaaSVisual() :
-          renderInventoryVisual()
+          scenario.id === 'scraping' ? renderInventoryVisual() :
+          renderFlightsVisual()
         ) : (
           renderAccessibilityTree()
         )}
